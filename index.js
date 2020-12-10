@@ -14,3 +14,12 @@ const args = minimist (process.argv );
 //     console.log( `Remove ${ args.r }`);
 // }
 
+if (args[2] === undefined) {
+    console.log(`
+    Parancssori argumentumok:
+    -l   Kilistázza a feladatokat
+    -a   Új feladatot ad hozzá
+    -r   Eltávolít egy feladatot
+    -c   Teljesít egy feladatot
+    `);
+}
