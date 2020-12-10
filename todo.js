@@ -1,6 +1,7 @@
 import minimist from 'minimist';
 
 const args = minimist (process.argv );
+const fs = require('fs');
 
 //npm init -y
 // package.json kiegészítése "type":"module"-lal
