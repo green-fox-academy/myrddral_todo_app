@@ -2,6 +2,9 @@
 import minimist from 'minimist';
 import fs from 'fs';
 import {listAllItems} from './argument-functions.js';
+import {AllItemsCount} from './argument-functions.js';
+import {header} from './argument-functions.js';
+import { clear } from 'console';
 
 const args = minimist (process.argv );
 
@@ -54,8 +57,14 @@ if (aOptionValue === undefined || aOptionValue[0] === '-') {
 // console.log( Object.keys( args ).every ( arg => typeof arg === 'string'));
 // console.log( Object.keys( args ).every ( arg => ['_', 'l', 'a', 'r', 'c'].includes (arg)));
 
-if (args.l) {
+if (args.l && AllItemsCount != 0) {
     listAllItems();
+} else {
+    console.clear();
+    console.log(header);
+    console.log();
+    console.log('Mára nincs több teendőd :)');
+    console.log();
 }
 // else if (args.a) {}
 
