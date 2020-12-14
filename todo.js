@@ -1,91 +1,104 @@
-'use strict';
-import minimist from 'minimist';
-import fs from 'fs';
-import {listAllItems} from './argument-functions.js';
-import {AllItemsCount} from './argument-functions.js';
-import {header} from './argument-functions.js';
-import { clear } from 'console';
+"use strict";
+import minimist from "minimist";
+import fs from "fs";
+import { listAllItems } from "./argument-functions.js";
+import { AllItemsCount } from "./argument-functions.js";
+import { header } from "./argument-functions.js";
+import { jsonTodos } from "./argument-functions.js";
 
-const args = minimist (process.argv );
+const args = minimist(process.argv);
 
-//npm init -y
-// package.json kiegészítése "type":"module"-lal
-// npm install minimist (egy fv ami kigyűjti a kulcsokhoz a megfelelő értéket)
+//importing existing data from module
+const todoTemp = jsonTodos;
 
+const manualText = `
+HASZNÁLAT:
+-l   Kilistázza a teendőket
+-a   "teendő szövege"  - Új teendőt ad hozzá
+-r   teendő sorszáma   - Eltávolít egy teendőt (még nem használható)
+-c   teendő sorszáma   - Teljesít egy teendőt ( még nem használható)
+`;
+
+// define class and class functions
+
+class Todo {
+  constructor(id, content, status = false) {
+    this.id = id;
+    this.content = content;
+    this.status = status;
+  }
+  add() {}
+  getStatus() {}
+  setStatus(index) {}
+  delete(index) {}
+}
+
+// creating instances
+
+function createItem() {
+  const todo = new Todo(getUniqueId(), Object.values(args)[1]);
+  return todo;
+}
+
+function getUniqueId() {
+  if (jsonTodos[0] == undefined) {
+    return 1;
+  } else {
+    return Object.keys(jsonTodos).length + 1;
+  }
+}
+
+// validate arguments
 
 // if (typeof args.r === 'number') {
 //     console.log( `Remove ${ args.r }`);
 // }
 
-/*
-milyen fileok kellenek? 
-
-    json parse-olás (vissza JSON.stringify)
-        console.log(JSON.parse( )
-        
-milyen function-ök kellenek? 
-- kiírja a lista tartalmát
-- hozzáad a listához
-- töröl a listáról
-- teendő teljesítése, pipa
-
-*/
-
-// validate arguments
-
-if (Object.keys(args)[1] === undefined) {
-    console.log(`
-    HASZNÁLAT:
-    -l   Kilistázza a teendőokat
-    -a   <teendő szövege>  Új teendőt ad hozzá
-    -r   <teendő sorszáma>  Eltávolít egy teendőt
-    -c   <teendő sorszáma>  Teljesít egy teendőt
-    `);
+if (Object.keys(args)[1] === undefined) {  
+  console.log(manualText);
 }
 
-if (args._.length > 2 || !Object.keys( args ).every ( arg => ['_', 'l', 'a', 'r', 'c'].includes (arg))) {
-    console.log('Test');
+if (
+  args._.length > 2 ||
+  !Object.keys(args).every((arg) => ["_", "l", "a", "r", "c"].includes(arg))
+) {
+  console.log(`
+  Érvénytelen kapcsoló!
+  ${manualText}`);
 }
 
-const aOptionIndex = process.argv.indexOf( '-a' );
-const aOptionValue = process.argv[ aOptionIndex + 1 ];
+// -a kapcsoló ellenőrzése
+const aOptionIndex = process.argv.indexOf("-a");
+const aOptionValue = process.argv[aOptionIndex + 1];
 
-if (aOptionValue === undefined || aOptionValue[0] === '-') {
-    console.log('HIBA: Nem adtál meg teendőt a kapcsoló után! HASZNÁLAT: todo.js -a teendő szövege');
+if (aOptionValue === undefined || aOptionValue[0] === "-") {
+  console.log(`HIBA: Nem adtál meg teendőt a kapcsoló után! HASZNÁLAT: todo.js -a "teendő szövege"`);
 }
 
 // console.log( Object.keys( args ).every ( arg => typeof arg === 'string'));
 // console.log( Object.keys( args ).every ( arg => ['_', 'l', 'a', 'r', 'c'].includes (arg)));
 
-if (args.l && AllItemsCount != 0) {
-    listAllItems();
-} else {
-    console.clear();
-    console.log(header);
-    console.log();
-    console.log('Mára nincs több teendőd :)');
-    console.log();
+if (args.l && AllItemsCount != 0) {
+  listAllItems();
+} else if (args.l && AllItemsCount == 0) {
+  //   console.clear();  enable if no error during run
+  console.log(`${header}
+
+  Mára nincs több teendőd :)
+  
+  `);
+} else if (args.a) {
+  todoTemp.push(createItem());
+  let jsonToWrite = JSON.stringify(todoTemp, null, "\t");
+  fs.writeFileSync("todos.json", jsonToWrite);
 }
-// else if (args.a) {}
+// } else if (args.r) {
+// } else if (args.c) {
 
 
-class Todos {
-    list;
+// TODO
 
-    getStatus() {}
-    setStatus(index) {}
-    add(todo) {}
-    delete(index) {}
-}
-
-const TodoList = new Todos();
-
-// létre kell hoznom a todokat, manuálisan is
 // file-ból betölteni az adatokat - filekezelés try catch
-// ha -l: 
-// forEach-el végigmegyünk a listánkon és kiírjuk
-// sorszámot adni
-// printList();
 
 // ötlet: a message-eket külön file-ba (module)
 
