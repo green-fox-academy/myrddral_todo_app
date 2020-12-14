@@ -54,7 +54,7 @@ function getUniqueId() {
 //     console.log( `Remove ${ args.r }`);
 // }
 
-if (Object.keys(args)[1] === undefined) {  
+if (Object.keys(args)[1] === undefined) {
   console.log(manualText);
 }
 
@@ -71,7 +71,6 @@ if (
 const aOptionIndex = process.argv.indexOf("-a");
 const aOptionValue = process.argv[aOptionIndex + 1];
 
-
 // console.log( Object.keys( args ).every ( arg => typeof arg === 'string'));
 // console.log( Object.keys( args ).every ( arg => ['_', 'l', 'a', 'r', 'c'].includes (arg)));
 
@@ -84,8 +83,10 @@ if (args.l && AllItemsCount != 0) {
   Mára nincs több teendőd :)
   
   `);
-} else if (args.a && aOptionValue === undefined || aOptionValue[0] === "-") {
-  console.log(`HIBA: Nem adtál meg teendőt a kapcsoló után! HASZNÁLAT: todo.js -a "teendő szövege"`);
+} else if ((args.a && aOptionValue === undefined) || aOptionValue[0] === "-") {
+  console.log(
+    `HIBA: Nem adtál meg teendőt a kapcsoló után! HASZNÁLAT: todo.js -a "teendő szövege"`
+  );
 } else if (args.a) {
   todoTemp.push(createItem());
   let jsonToWrite = JSON.stringify(todoTemp, null, "\t");
@@ -93,7 +94,6 @@ if (args.l && AllItemsCount != 0) {
 }
 // } else if (args.r) {
 // } else if (args.c) {
-
 
 // TODO
 

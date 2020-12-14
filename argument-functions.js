@@ -24,7 +24,3 @@ export { listAllItems };
 export { AllItemsCount };
 export { header };
 export { jsonTodos };
-
-// { "id": "1", "content": "Kutyát sétáltatni", "status": "true" },
-// { "id": "2", "content": "Tejet venni", "status": "false" },
-// { "id": "3", "content": "Megcsinálni a leckét", "status": "true" }
