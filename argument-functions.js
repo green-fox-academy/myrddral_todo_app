@@ -5,7 +5,7 @@ const jsonContent = fs.readFileSync("todos.json", "utf-8");
 const jsonTodos = JSON.parse(jsonContent);
 const header =
   "* * * * * * * * * * * * * * * TEENDŐK * * * * * * * * * * * * * * *";
-let AllItemsCount = (jsonContent.split("\n").length - 2)/5;
+let AllItemsCount = jsonTodos.length;
 function listAllItems() {
   // console.clear();   enable if no error during run
   console.log(header);

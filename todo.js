@@ -78,11 +78,20 @@ if (args.l && AllItemsCount != 0) {
   todoTemp.push(createItem());
   let jsonToWrite = JSON.stringify(todoTemp, null, "\t");
   fs.writeFileSync("todos.json", jsonToWrite);
+} else if (args.r) {
+  todoTemp.splice(Object.values(args)[1] - 1, 1);
+  // megnövelni az id-t 1-el, azoknál az elemeknél, ahol az id nagyobb, mint az argumentum
+  todoTemp.forEach((element) => {
+    if (element.id > Object.values(args)[1]) {
+      element.id--;
+    }
+  });
+  let jsonToWrite = JSON.stringify(todoTemp, null, "\t");
+  fs.writeFileSync("todos.json", jsonToWrite);
+
+  // if (typeof args.r === 'number') {
+  //     console.log( `Remove ${ args.r }`);
 }
-// } else if (args.r) {
-// if (typeof args.r === 'number') {
-//     console.log( `Remove ${ args.r }`);
-// }
 // } else if (args.c) {
 
 // TODO
