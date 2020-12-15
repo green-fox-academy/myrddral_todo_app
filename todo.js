@@ -11,30 +11,16 @@ const args = minimist(process.argv);
 //importing existing data from module
 const todoTemp = jsonTodos;
 
-const manualText = `
-HASZNÁLAT:
--l   Kilistázza a teendőket
--a   "teendő szövege"  - Új teendőt ad hozzá
--r   teendő sorszáma   - Eltávolít egy teendőt (még nem használható)
--c   teendő sorszáma   - Teljesít egy teendőt ( még nem használható)
-`;
-
 // define class and class functions
-
 class Todo {
   constructor(id, content, status = false) {
     this.id = id;
     this.content = content;
     this.status = status;
   }
-  add() {}
-  getStatus() {}
-  setStatus(index) {}
-  delete(index) {}
 }
 
 // creating instances
-
 function createItem() {
   const todo = new Todo(getUniqueId(), Object.values(args)[1]);
   return todo;
@@ -49,11 +35,13 @@ function getUniqueId() {
 }
 
 // validate arguments
-
-// if (typeof args.r === 'number') {
-//     console.log( `Remove ${ args.r }`);
-// }
-
+const manualText = `
+HASZNÁLAT:
+-l   Kilistázza a teendőket
+-a   "teendő szövege"  - Új teendőt ad hozzá
+-r   teendő sorszáma   - Eltávolít egy teendőt (még nem használható)
+-c   teendő sorszáma   - Teljesít egy teendőt ( még nem használható)
+`;
 if (Object.keys(args)[1] === undefined) {
   console.log(manualText);
 }
@@ -72,7 +60,6 @@ const aOptionIndex = process.argv.indexOf("-a");
 const aOptionValue = process.argv[aOptionIndex + 1];
 
 // console.log( Object.keys( args ).every ( arg => typeof arg === 'string'));
-// console.log( Object.keys( args ).every ( arg => ['_', 'l', 'a', 'r', 'c'].includes (arg)));
 
 if (args.l && AllItemsCount != 0) {
   listAllItems();
@@ -93,6 +80,9 @@ if (args.l && AllItemsCount != 0) {
   fs.writeFileSync("todos.json", jsonToWrite);
 }
 // } else if (args.r) {
+// if (typeof args.r === 'number') {
+//     console.log( `Remove ${ args.r }`);
+// }
 // } else if (args.c) {
 
 // TODO

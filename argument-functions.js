@@ -18,8 +18,6 @@ function listAllItems() {
   console.log();
 }
 
-// console.log(Object.keys(jsonTodos));
-
 export { listAllItems };
 export { AllItemsCount };
 export { header };
