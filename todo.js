@@ -1,6 +1,6 @@
 "use strict";
 import minimist from "minimist";
-import fs from "fs";
+import fs, { write } from "fs";
 import { listAllItems } from "./argument-functions.js";
 import { AllItemsCount } from "./argument-functions.js";
 import { header } from "./argument-functions.js";
@@ -11,7 +11,7 @@ const args = minimist(process.argv);
 //importing existing data from module
 const todoTemp = jsonTodos;
 
-// define class and class functions
+// define class
 class Todo {
   constructor(id, content, status = false) {
     this.id = id;
@@ -34,12 +34,18 @@ function getUniqueId() {
   }
 }
 
+//writing data to json file
+function writeToFile() {
+  let jsonToWrite = JSON.stringify(todoTemp, null, "\t");
+  fs.writeFileSync("todos.json", jsonToWrite);
+}
+
 // validate arguments
 const manualText = `
 HASZNÁLAT:
 -l   Kilistázza a teendőket
 -a   "teendő szövege"  - Új teendőt ad hozzá
--r   teendő sorszáma   - Eltávolít egy teendőt (még nem használható)
+-r   teendő sorszáma   - Eltávolít egy teendőt
 -c   teendő sorszáma   - Teljesít egy teendőt ( még nem használható)
 `;
 if (Object.keys(args)[1] === undefined) {
@@ -55,9 +61,11 @@ if (
   ${manualText}`);
 }
 
-// -a kapcsoló ellenőrzése
+
 const aOptionIndex = process.argv.indexOf("-a");
 const aOptionValue = process.argv[aOptionIndex + 1];
+const rOptionIndex = process.argv.indexOf("-r");
+const rOptionValue = process.argv[rOptionIndex + 1];
 
 // console.log( Object.keys( args ).every ( arg => typeof arg === 'string'));
 
@@ -76,29 +84,33 @@ if (args.l && AllItemsCount != 0) {
   );
 } else if (args.a) {
   todoTemp.push(createItem());
-  let jsonToWrite = JSON.stringify(todoTemp, null, "\t");
-  fs.writeFileSync("todos.json", jsonToWrite);
+  writeToFile();
+} else if (args.r && rOptionValue === undefined) {
+  console.log(
+    `HIBA: Nem adtál meg sorszámot a kapcsoló után! HASZNÁLAT: todo.js -r teendő sorszáma`
+  );
+} else if (args.r && typeof args.r === 'string') {
+  console.log(
+    `HIBA: Nem számot adtál meg! HASZNÁLAT: todo.js -r teendő sorszáma`
+  );
+} else if (args.r && rOptionValue > AllItemsCount) {
+  console.log(
+    `HIBA: Nincs ilyen sorszám!`
+  );
 } else if (args.r) {
   todoTemp.splice(Object.values(args)[1] - 1, 1);
-  // megnövelni az id-t 1-el, azoknál az elemeknél, ahol az id nagyobb, mint az argumentum
   todoTemp.forEach((element) => {
     if (element.id > Object.values(args)[1]) {
       element.id--;
     }
   });
-  let jsonToWrite = JSON.stringify(todoTemp, null, "\t");
-  fs.writeFileSync("todos.json", jsonToWrite);
-
-  // if (typeof args.r === 'number') {
-  //     console.log( `Remove ${ args.r }`);
+  writeToFile();
 }
 // } else if (args.c) {
 
 // TODO
 
 // file-ból betölteni az adatokat - filekezelés try catch
-
-// ötlet: a message-eket külön file-ba (module)
 
 // ha -a:
 // TodoList.add
