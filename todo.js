@@ -5,6 +5,7 @@ import { listAllItems } from "./argument-functions.js";
 import { AllItemsCount } from "./argument-functions.js";
 import { header } from "./argument-functions.js";
 import { jsonTodos } from "./argument-functions.js";
+import { clear } from "console";
 
 const args = minimist(process.argv);
 
@@ -61,20 +62,18 @@ if (
   ${manualText}`);
 }
 
-
 const aOptionIndex = process.argv.indexOf("-a");
 const aOptionValue = process.argv[aOptionIndex + 1];
 const rOptionIndex = process.argv.indexOf("-r");
 const rOptionValue = process.argv[rOptionIndex + 1];
-
-// console.log( Object.keys( args ).every ( arg => typeof arg === 'string'));
+const cOptionIndex = process.argv.indexOf("-c");
+const cOptionValue = process.argv[cOptionIndex + 1];
 
 if (args.l && AllItemsCount != 0) {
   listAllItems();
 } else if (args.l && AllItemsCount == 0) {
-  //   console.clear();  enable if no error during run
+  console.clear();
   console.log(`${header}
-
   Mára nincs több teendőd :)
   
   `);
@@ -85,39 +84,45 @@ if (args.l && AllItemsCount != 0) {
 } else if (args.a) {
   todoTemp.push(createItem());
   writeToFile();
+  listAllItems();
 } else if (args.r && rOptionValue === undefined) {
   console.log(
     `HIBA: Nem adtál meg sorszámot a kapcsoló után! HASZNÁLAT: todo.js -r teendő sorszáma`
   );
-} else if (args.r && typeof args.r === 'string') {
+} else if (args.r && typeof args.r === "string") {
   console.log(
     `HIBA: Nem számot adtál meg! HASZNÁLAT: todo.js -r teendő sorszáma`
   );
-} else if (args.r && rOptionValue > AllItemsCount) {
-  console.log(
-    `HIBA: Nincs ilyen sorszám!`
-  );
+} else if ((args.r && rOptionValue > AllItemsCount) || rOptionValue == 0) {
+  console.log(`HIBA: Nincs ilyen sorszám!`);
 } else if (args.r) {
   todoTemp.splice(Object.values(args)[1] - 1, 1);
   todoTemp.forEach((element) => {
-    if (element.id > Object.values(args)[1]) {
-      element.id--;
+    if (element.id > Object.values(args)[1]) element.id--;
+  });
+  writeToFile();
+  listAllItems();
+} else if (args.c && cOptionValue === undefined) {
+  console.log(
+    `HIBA: Nem adtál meg sorszámot a kapcsoló után! HASZNÁLAT: todo.js -c teendő sorszáma`
+  );
+} else if (args.c && typeof args.c === "string") {
+  console.log(
+    `HIBA: Nem számot adtál meg! HASZNÁLAT: todo.js -c teendő sorszáma`
+  );
+} else if ((args.c && cOptionValue > AllItemsCount) || cOptionValue == 0) {
+  console.log(`HIBA: Nincs ilyen sorszám!`);
+} else if (args.c) {
+  todoTemp.forEach((element) => {
+    if (element.id == Object.values(args)[1]) {
+      element.status = true;
     }
   });
   writeToFile();
+  listAllItems();
 }
-// } else if (args.c) {
 
 // TODO
 
-// file-ból betölteni az adatokat - filekezelés try catch
-
-// ha -a:
-// TodoList.add
-// kell-e külön funkció, ami kiírja file-ba?
-// 1fv -> 1 funkció: a program végén visszírjuk a file-ba
-
-// ha -r: akkor remove
-// TodoList.remove
-
-// státusz állítás
+// try-catch a filekezelésre
+// törlés töröl a file-ból de hibára fut utána - módosításnál nem
